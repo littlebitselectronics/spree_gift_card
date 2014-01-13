@@ -30,13 +30,6 @@ describe "Checkout", js: true do
         page.should have_content("-$19.99")
       end
     end
-
-    it "cannot enter a gift code that was created after the order" do
-      Spree::GiftCard.first.update_attribute(:created_at, 1.day.from_now)
-      fill_in "order[gift_code]", :with => "foobar"
-      click_button "Update"
-      page.should have_content("The gift code you entered doesn't exist. Please try again.")
-    end
   end
 
   context "visitor makes checkout as guest without registration" do
