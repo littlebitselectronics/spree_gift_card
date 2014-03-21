@@ -12,7 +12,7 @@ module Spree
         # Ensure a negative amount which does not exceed the sum of the order's item_total, ship_total, and 
         # tax_total, minus other credits.
         credits = order.adjustments.select{|a|a.amount < 0 && a.originator_type != 'Spree::GiftCard'}.map(&:amount).sum
-        [(order.item_total + order.ship_total + order.tax_total + credits), gift_card.current_value].min * -1
+        [(order.item_total + order.ship_total + order.tax_total + credits + order.adjustment_total), gift_card.current_value].min * -1
       end
 
     end
