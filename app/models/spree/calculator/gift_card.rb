@@ -11,8 +11,9 @@ module Spree
       def compute(order, gift_card)
         # Ensure a negative amount which does not exceed the sum of the order's item_total, ship_total, and
         # tax_total, minus other credits.
-        credits = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::GiftCard'}.map(&:amount).sum
-        [(order.item_total + order.ship_total + order.included_tax_total + order.additional_tax_total + credits), gift_card.current_value].min * -1
+        credits = order.adjustments.select{|a|a.amount < 0 && a.originator_type != 'Spree::GiftCard'}.map(&:amount).sum
+        credits_no_tax = order.adjustments.select{|a|a.amount < 0 && a.originator_type != 'Spree::Tax'}.map(&:amount).sum
+        [(order.item_total + order.ship_total + order.tax_total + credits + credits_no_tax), gift_card.current_value].min * -1
       end
 
     end
