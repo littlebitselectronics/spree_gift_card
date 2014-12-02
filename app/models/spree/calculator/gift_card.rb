@@ -13,7 +13,7 @@ module Spree
         # tax_total, minus other credits.
         current = order.adjustments.select{|a| a.source.try(:code) == gift_card.code}.first
         return current.try(:amount) unless current.nil?
-        credits = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::GiftCard'}.map(&:amount).sum
+        credits = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::GiftCard' && a.source_type != 'Spree::PromotionAction'}.map(&:amount).sum
         credits_no_tax = order.adjustments.select{|a|a.amount < 0 && a.source_type != 'Spree::Tax'}.map(&:amount).sum
         [(order.item_total + order.ship_total + order.tax_total + credits + credits_no_tax), gift_card.current_value].min * -1
       end
